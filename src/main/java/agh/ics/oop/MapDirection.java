@@ -1,72 +1,45 @@
 package agh.ics.oop;
 
 public enum MapDirection {
-    NORTH,
-    NORTHEAST,
-    WEST,
+    NORTH("N"),
+    NORTHEAST("NE"),
+    EAST("E"),
+    SOUTHEAST("SE"),
+    SOUTH("S"),
+    SOUTHWEST("SW"),
+    WEST("W"),
+    NORTHWEST("NW");
 
+    private final String name;
+    MapDirection(String name){
+        this.name=name;
+    }
 
-    WEST,
-    EAST;
-
-
+    @Override
     public String toString(){
-        switch (this){
-            case EAST:
-                return "Wschód";
-            case WEST:
-                return "Zachód";
-            case NORTH:
-                return "Północ";
-            case SOUTH:
-                return "Południe";
-            default:
-                return "Błąd";
-        }
+        return this.name;
+    }
+
+    public Vector2d toVector2d(){
+        return switch (this){
+            case NORTH -> new Vector2d(0,1);
+            case NORTHEAST -> new Vector2d(1,1);
+            case EAST-> new Vector2d(1,0);
+            case SOUTHEAST -> new Vector2d(1,-1);
+            case SOUTH -> new Vector2d(0,-1);
+            case SOUTHWEST -> new Vector2d(-1,-1);
+            case WEST -> new Vector2d(-1,0);
+            case NORTHWEST -> new Vector2d(-1,1);
+        };
     }
 
     public MapDirection next(){
-        switch (this){
-            case NORTH:
-                return EAST;
-            case EAST:
-                return SOUTH;
-            case SOUTH:
-                return WEST;
-            case WEST:
-                return NORTH;
-            default:
-                return null;
-        }
+        MapDirection[] directions=this.values();
+        return directions[(this.ordinal()+1)% directions.length];
     }
 
     public MapDirection previous(){
-        switch (this){
-            case NORTH:
-                return WEST;
-            case WEST:
-                return SOUTH;
-            case SOUTH:
-                return EAST;
-            case EAST:
-                return NORTH;
-            default:
-                return null;
-        }
-    }
-
-    public Vector2d toUnitVector(){
-        switch (this){
-            case NORTH:
-                return new Vector2d(0,1);
-            case WEST:
-                return new Vector2d(-1,0);
-            case SOUTH:
-                return new Vector2d(0,-1);
-            case EAST:
-                return new Vector2d(1,0);
-            default:
-                return null;
-        }
+        MapDirection[] directions=this.values();
+        return directions[(this.ordinal()+directions.length-1)% directions.length];
     }
 }
