@@ -21,4 +21,12 @@ public class Animal {
     public Genotype getGenotype(){
         return this.genotype;
     }
+
+    public Vector2d getPosition(){
+        return this.position;
+    }
+
+    public String toString(){
+        return "*";
+    }
 }
