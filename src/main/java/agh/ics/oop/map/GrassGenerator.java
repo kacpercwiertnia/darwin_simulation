@@ -1,12 +1,14 @@
 package agh.ics.oop.map;
 
+import agh.ics.oop.Grass;
 import agh.ics.oop.Vector2d;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class GrassGenerator {
-    int width,height,plants;
+public abstract class GrassGenerator {
+    protected int width,height,plants;
     List<Vector2d> coords = new ArrayList<>();
-
+    abstract Map<Vector2d, Grass> generateGrass(ArrayList<Vector2d> currentGrass, int grassnum);
 }

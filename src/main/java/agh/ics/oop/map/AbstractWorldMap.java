@@ -19,11 +19,14 @@ public class AbstractWorldMap {
         }
     }
     public boolean isOccupied(Vector2d position){
-        return animals.containsKey(position);
+        return animals.containsKey(position) || plants.containsKey(position);
     }
-    public Animal objectAt(Vector2d position){
+    public Object objectAt(Vector2d position){
         if (this.animals.containsKey(position)){
             return this.animals.get(position);
+        }
+        if (this.plants.containsKey(position)){
+            return this.plants.get(position);
         }
         return null;
     }
