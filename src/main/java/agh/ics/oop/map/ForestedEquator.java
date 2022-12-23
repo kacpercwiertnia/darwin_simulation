@@ -3,9 +3,7 @@ package agh.ics.oop.map;
 import agh.ics.oop.Grass;
 import agh.ics.oop.Vector2d;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ForestedEquator extends GrassGenerator{
     private Vector2d prefLowLeft;
@@ -25,15 +23,30 @@ public class ForestedEquator extends GrassGenerator{
         if (this.prefLowLeft.y>this.prefTopRight.y){
             this.prefTopRight=new Vector2d(prefTopRight.x, prefLowLeft.y);
         }
-        System.out.println(prefTopRight);
-        System.out.println(prefLowLeft);
+
     }
 
-    public Map<Vector2d,Grass> generateGrass(List<Vector2d> currentGrass, int grassnum){
+    public Map<Vector2d,Grass> generateGrass(ArrayList<Vector2d> currentGrass, int grassnum){
         this.coords=currentGrass;
-        int i=0;
-        boolean flag;
-        return new HashMap<Vector2d,Grass>();
+        int i=0,x,y;
+        Random rn = new Random();
+        Vector2d v;
+        while (i<grassnum){
+
+            x=rn.nextInt(0,this.width);
+            y=rn.nextInt(0,this.height);
+            v = new Vector2d(x,y);
+            if (!currentGrass.contains(v)){
+                currentGrass.add(v);
+            }
+            i++;
+
+        }
+        Map<Vector2d,Grass> map= new HashMap<>();
+        for (Vector2d vector:currentGrass){
+            map.put(vector,new Grass());
+        }
+        return map;
 
 
     }
