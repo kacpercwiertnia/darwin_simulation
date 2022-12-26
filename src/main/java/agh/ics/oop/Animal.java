@@ -11,7 +11,6 @@ public class Animal {
         this.health = health;
         this.position = position;
         this.genotype = genotype;
-
     }
 
     public int getHealth() {
@@ -26,7 +25,15 @@ public class Animal {
         return this.position;
     }
 
+    public MapDirection getDirection(){
+        return this.direction;
+    }
+
     public String toString(){
         return "^";
+    }
+
+    public boolean isAt(Vector2d position) {
+        return this.position.equals(position);
     }
 }
