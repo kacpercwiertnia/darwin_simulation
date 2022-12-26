@@ -9,6 +9,5 @@ import java.util.Map;
 
 public abstract class GrassGenerator {
     protected int width,height,plants;
-    List<Vector2d> coords = new ArrayList<>();
     abstract Map<Vector2d, Grass> generateGrass(ArrayList<Vector2d> currentGrass, int grassnum);
 }

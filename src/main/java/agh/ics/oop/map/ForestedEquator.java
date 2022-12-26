@@ -8,11 +8,10 @@ import java.util.*;
 public class ForestedEquator extends GrassGenerator{
     private Vector2d prefLowLeft;
     private Vector2d prefTopRight;
-    public ForestedEquator(int width, int height, int grassToGenerate, Map<Vector2d, Grass> presentGrass){
+    public ForestedEquator(int width, int height, int grassToGenerate){
         this.width=width;
         this.height=height;
         this.plants=grassToGenerate;
-        this.coords=presentGrass.keySet().stream().toList();
         getPreferedArea(width,height);
     }
     private void getPreferedArea(int width,int height){
@@ -27,20 +26,26 @@ public class ForestedEquator extends GrassGenerator{
     }
 
     public Map<Vector2d,Grass> generateGrass(ArrayList<Vector2d> currentGrass, int grassnum){
-        this.coords=currentGrass;
         int i=0,x,y;
         Random rn = new Random();
         Vector2d v;
-        while (i<grassnum){
-
+        while (i<grassnum*0.8){
             x=rn.nextInt(0,this.width);
             y=rn.nextInt(0,this.height);
             v = new Vector2d(x,y);
-            if (!currentGrass.contains(v)){
+            if (!currentGrass.contains(v) && v.follows(prefLowLeft)&&v.precedes(prefTopRight)){
                 currentGrass.add(v);
+                i++;
             }
-            i++;
-
+        }
+        while (i<grassnum){
+            x=rn.nextInt(0,this.width);
+            y=rn.nextInt(0,this.height);
+            v = new Vector2d(x,y);
+            if (!currentGrass.contains(v) && (v.y<prefLowLeft.y || v.y> prefTopRight.y)){
+                currentGrass.add(v);
+                i++;
+            }
         }
         Map<Vector2d,Grass> map= new HashMap<>();
         for (Vector2d vector:currentGrass){
