@@ -4,8 +4,8 @@ import agh.ics.oop.Vector2d;
 
 public class MapVisualizer {
 
-        private static final String EMPTY_CELL = " ";
-        private static final String FRAME_SEGMENT = "-";
+        private static final String EMPTY_CELL = "   ";
+        private static final String FRAME_SEGMENT = "--";
         private static final String CELL_SEGMENT = "|";
         private final AbstractWorldMap map;
 
@@ -48,7 +48,12 @@ public class MapVisualizer {
             StringBuilder builder = new StringBuilder();
             builder.append(" y\\x ");
             for (int j = lowerLeft.x; j < upperRight.x + 1; j++) {
-                builder.append(String.format("%2d", j));
+                if (j<10){
+                    builder.append("  "+j+" ");
+                }else{
+                    builder.append(" "+j+" ");
+                }
+
             }
             builder.append(System.lineSeparator());
             return builder.toString();

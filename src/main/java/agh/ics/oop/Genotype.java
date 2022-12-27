@@ -6,15 +6,18 @@ import java.util.List;
 public class Genotype {
     private final int length;
     private final List<Integer> genotype = new ArrayList<>();
+    private final int movementType;
+    private int currentGene = -1;
 
-    public Genotype(int length, Animal parent1, Animal parent2, int mutationType){
+    public Genotype(int length, Animal parent1, Animal parent2, int mutationType, int movementType){
         this.length = length;
-        int side = (int) ((Math.random() * (0 - 1)) + 0);
+        this.movementType = movementType;
+        int side = (int) ((Math.random() * (1 - 0)) + 0);
         Animal strongerParent;
         Animal weakerParent;
         Genotype strongerGenotype;
         Genotype weakerGenotype;
-        int numOfMutation = (int) ((Math.random() * (0 - this.length)) + 0);
+        int numOfMutation = (int) ((Math.random() * (this.length - 0)) + 0);
 
         if( parent1.getHealth() > parent2.getHealth() ){
             strongerParent = parent1;
@@ -56,13 +59,13 @@ public class Genotype {
         int newGene = 0;
 
         for( int i = 0; i < numOfMutation; i++){
-            pickedGene = (int) ((Math.random() * (0 - (this.length-1))) + 0);
+            pickedGene = (int) ((Math.random() * ((this.length-1) - 0)) + 0);
 
             if( mutationType == 0 ){
-                newGene = (int) ((Math.random() * (0 - 7)) + 0);
+                newGene = (int) ((Math.random() * (7 - 0)) + 0);
             }
             else{
-               int addOrSub = (int) ((Math.random() * (0 - 1)) + 0);
+               int addOrSub = (int) ((Math.random() * (1 - 0)) + 0);
 
                if( addOrSub == 0 ){
                    newGene = (this.genotype.get(pickedGene) + 1) % 8;
@@ -82,11 +85,12 @@ public class Genotype {
 
     }
 
-    public Genotype(int length){
+    public Genotype(int length, int movementType){
         this.length = length;
+        this.movementType = movementType;
 
         for( int i = 0; i < length; i++ ) {
-            int gene = (int) ((Math.random() * (0 - 7)) + 0);
+            int gene = (int) ((Math.random() * (7 - 0)) + 0);
             genotype.add(gene);
         }
     }
@@ -97,6 +101,37 @@ public class Genotype {
 
     public int getLength(){
         return this.length;
+    }
+
+    public String toString(){
+        return this.genotype.toString();
+    }
+
+    public int nextGene(){
+        if( this.movementType == 0 ){
+            if( this.currentGene == this.length-1 ){
+                this.currentGene = 0;
+            }
+            else{
+                this.currentGene += 1;
+            }
+        }
+        else{
+            int ifRandMovement = (int) ((Math.random() * (9 - 0)) + 0);
+            if( ifRandMovement <= 7 ){
+                if( this.currentGene == this.length-1 ){
+                    this.currentGene = 0;
+                }
+                else{
+                    this.currentGene += 1;
+                }
+            }
+            else{
+                this.currentGene = (int) ((Math.random() * (this.length-1 - 0)) + 0);
+            }
+        }
+
+        return this.genotype.get(this.currentGene);
     }
 
 }

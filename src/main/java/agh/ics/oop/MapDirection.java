@@ -3,14 +3,14 @@ package agh.ics.oop;
 import java.util.Random;
 
 public enum MapDirection {
-    NORTH("N"),
-    NORTHEAST("NE"),
-    EAST("E"),
-    SOUTHEAST("SE"),
-    SOUTH("S"),
-    SOUTHWEST("SW"),
-    WEST("W"),
-    NORTHWEST("NW");
+    NORTH(" N "),
+    NORTHEAST("N E"),
+    EAST(" E "),
+    SOUTHEAST("S E"),
+    SOUTH(" S "),
+    SOUTHWEST("S W"),
+    WEST(" W "),
+    NORTHWEST("N W");
 
     private final String name;
     MapDirection(String name){
@@ -19,8 +19,9 @@ public enum MapDirection {
 
     @Override
     public String toString(){
-        return this.name;
+        return name;
     }
+
 
     public Vector2d toVector2d(){
         return switch (this){
@@ -36,16 +37,16 @@ public enum MapDirection {
     }
 
     public MapDirection next(){
-        MapDirection[] directions=this.values();
+        MapDirection[] directions=values();
         return directions[(this.ordinal()+1)% directions.length];
     }
 
     public MapDirection previous(){
-        MapDirection[] directions=this.values();
+        MapDirection[] directions=values();
         return directions[(this.ordinal()+directions.length-1)% directions.length];
     }
-    public MapDirection getRandom(){
-        Random rn=new Random();
-        return this.values()[rn.nextInt(0,8)];
+    public MapDirection turn(int degree){
+        return values()[(this.ordinal()+degree+ values().length)%values().length];
     }
+
 }

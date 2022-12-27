@@ -26,25 +26,31 @@ public class ForestedEquator extends GrassGenerator{
     }
 
     public Map<Vector2d,Grass> generateGrass(ArrayList<Vector2d> currentGrass, int grassnum){
-        int i=0,x,y;
+        int j=0,i=0,x,y;
+
         Random rn = new Random();
         Vector2d v;
-        while (i<grassnum*0.8){
-            x=rn.nextInt(0,this.width);
-            y=rn.nextInt(0,this.height);
+        while (i<grassnum*0.8 && j<100){
+            j++;
+            x=rn.nextInt(prefLowLeft.x,prefTopRight.x+1);
+            y=rn.nextInt(prefLowLeft.y, prefTopRight.y+1);
             v = new Vector2d(x,y);
             if (!currentGrass.contains(v) && v.follows(prefLowLeft)&&v.precedes(prefTopRight)){
                 currentGrass.add(v);
                 i++;
+                j=0;
             }
         }
-        while (i<grassnum){
+        j=0;
+        while (i<grassnum && j<100){
+            j++;
             x=rn.nextInt(0,this.width);
             y=rn.nextInt(0,this.height);
             v = new Vector2d(x,y);
             if (!currentGrass.contains(v) && (v.y<prefLowLeft.y || v.y> prefTopRight.y)){
                 currentGrass.add(v);
                 i++;
+                j=0;
             }
         }
         Map<Vector2d,Grass> map= new HashMap<>();

@@ -4,18 +4,32 @@ import agh.ics.oop.Animal;
 import agh.ics.oop.Grass;
 import agh.ics.oop.Vector2d;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AbstractWorldMap {
-    int width,height,grassnum;
+public abstract class AbstractWorldMap {
+    protected int width,height,grassnum,age=0;
     GrassGenerator grassField;
-    Map<Vector2d,Animal> animals = new HashMap<>();
+    Map<Vector2d, ArrayList<Animal>> animals = new HashMap<>();
     Map<Vector2d, Grass> plants = new HashMap<>();
 
+    public void increaseAge(){
+        this.age++;
+    }
+    public int getAge(){
+        return this.age;
+    }
     public void place(Animal animal,Vector2d position){
-        if (!isOccupied(position)){
-            this.animals.put(position,animal);
+        if (!this.animals.containsKey(position)){
+            ArrayList<Animal> newanimal = new ArrayList<>();
+            newanimal.add(animal);
+            this.animals.put(position,newanimal);
+        }else{
+            ArrayList<Animal> anims = new ArrayList<>();
+            anims=this.animals.get(position);
+            anims.add(animal);
+            this.animals.replace(position,this.animals.get(position),anims);
         }
     }
     public boolean isOccupied(Vector2d position){
@@ -30,11 +44,82 @@ public class AbstractWorldMap {
         }
         return null;
     }
-
+    abstract public Vector2d canMoveTo(Vector2d position,Vector2d movement);
     public Vector2d getLowerLeft(){
         return new Vector2d(0,0);
     }
     public Vector2d getUpperRight(){
         return new Vector2d(this.width-1,this.height-1);
+    }
+
+    public void moveAnimal(Animal animal,Vector2d position){
+        ArrayList<Animal> aanimals= this.animals.get(animal.getPosition());
+        aanimals.remove(animal);
+        if (aanimals.isEmpty()){
+            this.animals.remove(animal.getPosition());
+        }else{
+            this.animals.replace(animal.getPosition(),aanimals);
+        }
+        if (animals.containsKey(position)){
+            aanimals = this.animals.get(position);
+            aanimals.add(animal);
+            this.animals.put(position,aanimals);
+            System.out.println("Coś tu jest");
+        }else{
+            aanimals = new ArrayList<>();
+            aanimals.add(animal);
+            this.animals.put(position,aanimals);
+        }
+    }
+    public ArrayList<Animal> clearCorpses(){
+        HashMap<Vector2d,Animal> toDelete = new HashMap<>();
+        ArrayList<Animal> anims= new ArrayList<>();
+        for (ArrayList<Animal> animal:this.animals.values()){
+            for (Animal one:animal){
+                if (one.getHealth()==0){
+                    toDelete.put(one.getPosition(),one);
+                }else{
+                    anims.add(one);
+                }
+            }
+        }
+        for (Map.Entry<Vector2d,Animal> entry:toDelete.entrySet()){
+            ArrayList<Animal> animallist=new ArrayList<>();
+            animallist=this.animals.get(entry.getKey());
+            animallist.remove(entry.getValue());
+            if (animallist.isEmpty()){
+                this.animals.remove(entry.getKey());
+            }else{
+                this.animals.put(entry.getKey(),animallist);
+            }
+
+        }
+        return anims;
+    }
+
+    public void eatingTime(int energy){
+        HashMap<Vector2d,Grass> toDelete=new HashMap<>();
+        for (Map.Entry<Vector2d,Grass> mapentry:this.plants.entrySet()){
+            if (this.animals.containsKey(mapentry.getKey())){
+                if (this.animals.get(mapentry.getKey()).size()>1){
+                    int idx=this.getWinner(this.animals.get(mapentry.getKey()));
+                }else{
+                    this.animals.get(mapentry.getKey()).get(0).eat(energy);
+                }
+            }
+        }
+    }
+    private int getWinner(ArrayList<Animal> animals){
+        int best=0;
+        boolean flag=true;
+        for (int i=0;i<animals.size();i++){
+            if (animals.get(i).getHealth()>animals.get(best).getHealth()){
+                best=i;
+                flag=false;
+            }else if(animals.get(i).getHealth()==animals.get(best).getHealth()){
+                flag=true;
+            }
+        }
+        return 0;
     }
 }

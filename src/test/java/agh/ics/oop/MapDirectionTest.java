@@ -62,4 +62,16 @@ class MapDirectionTest {
         assertEquals(e.previous(),ne);
         assertEquals(ne.previous(),n);
     }
+    @Test
+    void turn(){
+        System.out.println(w.turn(0));
+        System.out.println(w.turn(1));
+        System.out.println(w.turn(2));
+        System.out.println(w.turn(3));
+        System.out.println(w.turn(4));
+        System.out.println(w.turn(5));
+        System.out.println(w.turn(6));
+        System.out.println(w.turn(7));
+
+    }
 }

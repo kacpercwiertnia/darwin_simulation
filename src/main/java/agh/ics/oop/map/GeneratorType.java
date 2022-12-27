@@ -9,7 +9,7 @@ public enum GeneratorType {
     FORESTED_EQUATOR,
     TOXIC_CORPSES;
 
-    public GrassGenerator getGenerator(int width, int height, int grassToGenerate, Map<Vector2d, Grass> presentGrass){
+    public GrassGenerator getGenerator(int width, int height, int grassToGenerate){
         return switch(this){
             case TOXIC_CORPSES -> new ToxicCorpses();
             case FORESTED_EQUATOR -> new ForestedEquator(width, height,grassToGenerate);
