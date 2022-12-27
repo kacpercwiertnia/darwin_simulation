@@ -21,9 +21,7 @@ public class Animal {
         this.genotype = genotype;
         this.map = map;
         this.birthDate = this.map.getAge();
-        //System.out.println(this.genotype.toString());
-        //System.out.println(this.direction.toString());
-        //System.out.println(this.position.toString());
+
 
     }
 
@@ -42,10 +40,12 @@ public class Animal {
     public MapDirection getDirection(){
         return this.direction;
     }
+    public int getAge(){return this.map.getAge()-this.birthDate;}
     @Override
     public String toString(){
         return this.direction.toString();
     }
+
 
     public boolean isAt(Vector2d position) {
         return this.position.equals(position);

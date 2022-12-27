@@ -2,13 +2,23 @@ package agh.ics.oop.map;
 
 import agh.ics.oop.Animal;
 import agh.ics.oop.Grass;
+import agh.ics.oop.Grave;
 import agh.ics.oop.Vector2d;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractWorldMap {
+    Comparator<Grave> comparator = new Comparator<Grave>() {
+        @Override
+        public int compare(Grave o1, Grave o2) {
+            if(o1.corpses> o2.corpses){
+                return 1;
+            }else{
+                return -1;
+            }
+        }
+    };
+    protected Grave[] graveyard;
     protected int width,height,grassnum,age=0;
     GrassGenerator grassField;
     Map<Vector2d, ArrayList<Animal>> animals = new HashMap<>();
@@ -96,13 +106,21 @@ public abstract class AbstractWorldMap {
         }
         return anims;
     }
-
+    private void addCorpse(Vector2d position){
+        for (int i=0;i<graveyard.length;i++){
+            if (graveyard[i].position.equals(position)){
+                graveyard[i].corpses++;
+                Arrays.sort(graveyard,comparator);
+            }
+        }
+    }
     public void eatingTime(int energy){
         HashMap<Vector2d,Grass> toDelete=new HashMap<>();
         for (Map.Entry<Vector2d,Grass> mapentry:this.plants.entrySet()){
             if (this.animals.containsKey(mapentry.getKey())){
                 if (this.animals.get(mapentry.getKey()).size()>1){
                     int idx=this.getWinner(this.animals.get(mapentry.getKey()));
+                    this.animals.get(mapentry.getKey()).get(idx).eat(energy);
                 }else{
                     this.animals.get(mapentry.getKey()).get(0).eat(energy);
                 }
@@ -120,6 +138,28 @@ public abstract class AbstractWorldMap {
                 flag=true;
             }
         }
+        if (flag){return getWinner2(animals);}
         return 0;
+    }
+
+    private int getWinner2(ArrayList<Animal> animals){
+        int best=0;
+        boolean flag=true;
+        for (int i=0;i<animals.size();i++){
+            if (animals.get(i).getAge()>animals.get(best).getAge()){
+                best=i;
+                flag=false;
+            }else if(animals.get(i).getAge()==animals.get(best).getAge()){
+                flag=true;
+            }
+        }
+        if (flag){return getWinner3(animals);}
+        return best;
+    }
+
+    private int getWinner3(ArrayList<Animal> animals){
+
+        Random rn=new Random();
+        return rn.nextInt(animals.size());
     }
 }
