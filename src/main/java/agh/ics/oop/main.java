@@ -14,7 +14,7 @@ public class main {
 //        map.moveAnimal(doggy,new Vector2d(4,2));
 //        MapVisualizer mapVisualizer = new MapVisualizer(map);
 //        System.out.println(mapVisualizer.draw(map.getLowerLeft(),map.getUpperRight()));
-        SimulationEngine silnik= new SimulationEngine(map,8,5,0,5,10);
+        SimulationEngine silnik= new SimulationEngine(map,8,5,MovementType.FULL_PREDESTINATION,5,10);
         silnik.run();
     }
 

@@ -6,12 +6,14 @@ import java.util.List;
 public class Genotype {
     private final int length;
     private final List<Integer> genotype = new ArrayList<>();
-    private final int movementType;
+    private final MovementType movementType;
+    private MutationType mutationType;
     private int currentGene = -1;
 
-    public Genotype(int length, Animal parent1, Animal parent2, int mutationType, int movementType){
+    public Genotype(int length, Animal parent1, Animal parent2, MutationType mutationType, MovementType movementType){
         this.length = length;
         this.movementType = movementType;
+        this.mutationType = mutationType;
         int side = (int) ((Math.random() * (1 - 0)) + 0);
         Animal strongerParent;
         Animal weakerParent;
@@ -61,7 +63,7 @@ public class Genotype {
         for( int i = 0; i < numOfMutation; i++){
             pickedGene = (int) ((Math.random() * ((this.length-1) - 0)) + 0);
 
-            if( mutationType == 0 ){
+            if( mutationType == MutationType.BLESSRNG ){
                 newGene = (int) ((Math.random() * (7 - 0)) + 0);
             }
             else{
@@ -85,7 +87,7 @@ public class Genotype {
 
     }
 
-    public Genotype(int length, int movementType){
+    public Genotype(int length, MovementType movementType){
         this.length = length;
         this.movementType = movementType;
 
@@ -108,7 +110,7 @@ public class Genotype {
     }
 
     public int nextGene(){
-        if( this.movementType == 0 ){
+        if( this.movementType == MovementType.FULL_PREDESTINATION ){
             if( this.currentGene == this.length-1 ){
                 this.currentGene = 0;
             }

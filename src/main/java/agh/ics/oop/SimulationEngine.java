@@ -12,12 +12,12 @@ public class SimulationEngine {
     private List<Animal> animals;
     private final int numOfAnimals;
     private final int lengthOfGenotype;
-    private final int movementType;
+    private final MovementType movementType;
     private final int healthOfAnimal;
     private final int energyFromGrass;
     private MapVisualizer mapVisualizer;
 
-    public SimulationEngine( AbstractWorldMap map, int numOfAnimals, int lengthOfGenotype, int movementType, int healthOfAnimal, int energyFromGrass){
+    public SimulationEngine( AbstractWorldMap map, int numOfAnimals, int lengthOfGenotype, MovementType movementType, int healthOfAnimal, int energyFromGrass){
         this.map = map;
         this.numOfAnimals = numOfAnimals;
         this.lengthOfGenotype = lengthOfGenotype;
@@ -37,6 +37,7 @@ public class SimulationEngine {
     }
 
     public void run(){
+        System.out.println(this.mapVisualizer.draw(map.getLowerLeft(),map.getUpperRight()));
         for( int i = 0; i < 10; i++){
             this.animals = this.map.clearCorpses();
             for( Animal animal: animals){
@@ -47,7 +48,7 @@ public class SimulationEngine {
                 System.out.println("Po ruchu/: " + animal.getPosition().toString() + ' ' + animal.getDirection().toString());
                 System.out.println("KONIEC RUCHU");*/
             }
+            System.out.println(this.mapVisualizer.draw(map.getLowerLeft(),map.getUpperRight()));
         }
-        System.out.println(this.mapVisualizer.draw(map.getLowerLeft(),map.getUpperRight()));
     }
 }

@@ -21,8 +21,6 @@ public class Animal {
         this.genotype = genotype;
         this.map = map;
         this.birthDate = this.map.getAge();
-
-
     }
 
     public int getHealth() {
