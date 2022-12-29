@@ -5,7 +5,7 @@ import agh.ics.oop.*;
 import java.util.*;
 
 public abstract class AbstractWorldMap {
-    protected Grave[] graveyard;
+    public Grave[] graveyard;
     protected int width,height,grassnum,age=0;
     GrassGenerator grassField;
     Map<Vector2d, ArrayList<Animal>> animals = new HashMap<>();
@@ -193,7 +193,6 @@ public abstract class AbstractWorldMap {
                     this.place(mlode,mlode.getPosition());
                     potential.get(0).eat(-minhealth);
                     potential.get(1).eat(-minhealth);
-                    System.out.println("Zrobiliśmy dziecko");
                 }
                 newanimals.addAll(potential);
             }

@@ -5,6 +5,7 @@ import agh.ics.oop.map.AbstractWorldMap;
 import agh.ics.oop.map.MapVisualizer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -44,7 +45,7 @@ public class SimulationEngine implements Runnable{
     public void run(){
         try {
             System.out.println(this.mapVisualizer.draw(map.getLowerLeft(), map.getUpperRight()));
-            while(true) {
+            for(int i=0;i<100;i++) {
                 this.animals = this.map.clearCorpses();
                 mapRefresh();
                 Thread.sleep(50);
@@ -65,9 +66,11 @@ public class SimulationEngine implements Runnable{
                 mapRefresh();
                 Thread.sleep(50);
             }
+            for(Grave grave:this.map.graveyard){
+                System.out.print(grave.position.toString()+" "+grave.corpses);
+            }
         }
         catch (InterruptedException e){
-            System.out.println("Interruption while waiting for animal move!");
         }
     }
 

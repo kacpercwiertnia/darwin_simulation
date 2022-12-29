@@ -50,7 +50,7 @@ public class App extends Application implements IMapRefreshObserver{
         this.mapWidth = 20;
         this.initialGrassNumber = 30;
         this.grassRespawnNumber = 5;
-        this.generator = GeneratorType.FORESTED_EQUATOR;
+        this.generator = GeneratorType.TOXIC_CORPSES;
         this.map = new HellPortal((int)this.mapWidth,(int)this.mapHeight,this.initialGrassNumber, this.generator);
         this.initialAnimalNumber = 30;
         this.genotypeLength = 5;
