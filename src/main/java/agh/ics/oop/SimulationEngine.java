@@ -52,15 +52,13 @@ public class SimulationEngine implements Runnable{
                     animal.move();
                     mapRefresh();
                     Thread.sleep(50);
-                /*System.out.println("POCZATEK RUCHU");
-                System.out.println("Przed ruchem: " + animal.getPosition().toString() + ' ' + animal.getDirection().toString());
-                System.out.println("Po ruchu/: " + animal.getPosition().toString() + ' ' + animal.getDirection().toString());
-                System.out.println("KONIEC RUCHU");*/
                 }
                 map.eatingTime(this.energyFromGrass);
                 mapRefresh();
                 Thread.sleep(50);
-                System.out.println(this.mapVisualizer.draw(map.getLowerLeft(), map.getUpperRight()));
+                this.animals=map.reproduction(3,lengthOfGenotype,MutationType.BLESSRNG,movementType);
+                mapRefresh();
+                Thread.sleep(50);
                 this.map.generateGrass(this.dailyGrass);
                 this.map.increaseAge();
                 mapRefresh();

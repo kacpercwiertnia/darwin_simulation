@@ -1,9 +1,6 @@
 package agh.ics.oop.map;
 
-import agh.ics.oop.Animal;
-import agh.ics.oop.Grass;
-import agh.ics.oop.Grave;
-import agh.ics.oop.Vector2d;
+import agh.ics.oop.*;
 
 import java.util.*;
 
@@ -166,5 +163,41 @@ public abstract class AbstractWorldMap {
 
         Random rn=new Random();
         return rn.nextInt(animals.size());
+    }
+    public ArrayList<Animal> reproduction(int minhealth,int genlen,MutationType mutation,MovementType movement){
+        ArrayList<Animal> newanimals = new ArrayList<>();
+        for (Map.Entry<Vector2d,ArrayList<Animal>> entry:this.animals.entrySet()){
+            if (entry.getValue().size()==1){
+                newanimals.add(entry.getValue().get(0));
+            }
+            else{
+                ArrayList<Animal> potential = new ArrayList<>();
+                for (Animal animal:entry.getValue()){
+                    if (animal.getHealth()>=minhealth){
+                        potential.add(animal);
+                    }
+                    newanimals.add(animal);
+                }
+                potential.sort((Animal o1,Animal o2)-> {
+                    if(o1.getHealth()> o2.getHealth()){
+                        return 1;
+                    }else if (o1.getHealth()==o2.getHealth()){
+                        return 0;
+                    }else{
+                        return -1;
+                    }
+
+                });
+                if (potential.size()>1){
+                    newanimals.add(new Animal(new Genotype(genlen,potential.get(0),potential.get(1),mutation,movement),entry.getKey(),2*minhealth,this));
+                    potential.get(0).eat(-minhealth);
+                    potential.get(1).eat(-minhealth);
+                    System.out.println("Zrobiliśmy dziecko");
+                }
+                newanimals.addAll(potential);
+            }
+        }
+
+        return newanimals;
     }
 }
