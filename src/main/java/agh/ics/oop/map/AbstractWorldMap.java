@@ -62,7 +62,6 @@ public abstract class AbstractWorldMap {
             aanimals = this.animals.get(position);
             aanimals.add(animal);
             this.animals.put(position,aanimals);
-            System.out.println("Coś tu jest");
         }else{
             aanimals = new ArrayList<>();
             aanimals.add(animal);
@@ -179,7 +178,7 @@ public abstract class AbstractWorldMap {
                     newanimals.add(animal);
                 }
                 potential.sort((Animal o1,Animal o2)-> {
-                    if(o1.getHealth()> o2.getHealth()){
+                    if(o1.getHealth() < o2.getHealth()){
                         return 1;
                     }else if (o1.getHealth()==o2.getHealth()){
                         return 0;
@@ -189,7 +188,9 @@ public abstract class AbstractWorldMap {
 
                 });
                 if (potential.size()>1){
-                    newanimals.add(new Animal(new Genotype(genlen,potential.get(0),potential.get(1),mutation,movement),entry.getKey(),2*minhealth,this));
+                    Animal mlode=new Animal(new Genotype(genlen,potential.get(0),potential.get(1),mutation,movement),entry.getKey(),2*minhealth,this);
+                    newanimals.add(mlode);
+                    this.place(mlode,mlode.getPosition());
                     potential.get(0).eat(-minhealth);
                     potential.get(1).eat(-minhealth);
                     System.out.println("Zrobiliśmy dziecko");

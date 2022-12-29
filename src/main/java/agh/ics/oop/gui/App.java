@@ -48,14 +48,14 @@ public class App extends Application implements IMapRefreshObserver{
     public void init(){
         this.mapHeight = 20;
         this.mapWidth = 20;
-        this.initialGrassNumber = 50;
-        this.grassRespawnNumber = 10;
-        this.generator = GeneratorType.TOXIC_CORPSES;
+        this.initialGrassNumber = 30;
+        this.grassRespawnNumber = 5;
+        this.generator = GeneratorType.FORESTED_EQUATOR;
         this.map = new HellPortal((int)this.mapWidth,(int)this.mapHeight,this.initialGrassNumber, this.generator);
         this.initialAnimalNumber = 30;
         this.genotypeLength = 5;
         this.movementType = MovementType.FULL_PREDESTINATION;
-        this.initialAnimalEnergy = 5;
+        this.initialAnimalEnergy = 15;
         this.energyFromGrass = 4;
         this.engine = new SimulationEngine(this.map,this.initialAnimalNumber,this.genotypeLength,this.movementType,this.initialAnimalEnergy,this.energyFromGrass, this.grassRespawnNumber);
         this.engine.addObserver(this);

@@ -44,19 +44,20 @@ public class SimulationEngine implements Runnable{
     public void run(){
         try {
             System.out.println(this.mapVisualizer.draw(map.getLowerLeft(), map.getUpperRight()));
-            for (int i = 0; i < 100; i++) {
+            while(true) {
                 this.animals = this.map.clearCorpses();
                 mapRefresh();
                 Thread.sleep(50);
                 for (Animal animal : animals) {
                     animal.move();
-                    mapRefresh();
-                    Thread.sleep(50);
+
                 }
+                mapRefresh();
+                Thread.sleep(50);
                 map.eatingTime(this.energyFromGrass);
                 mapRefresh();
                 Thread.sleep(50);
-                this.animals=map.reproduction(3,lengthOfGenotype,MutationType.BLESSRNG,movementType);
+                this.animals=map.reproduction(1,lengthOfGenotype,MutationType.BLESSRNG,movementType);
                 mapRefresh();
                 Thread.sleep(50);
                 this.map.generateGrass(this.dailyGrass);
