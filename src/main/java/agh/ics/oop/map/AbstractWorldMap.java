@@ -163,7 +163,7 @@ public abstract class AbstractWorldMap {
         Random rn=new Random();
         return rn.nextInt(animals.size());
     }
-    public ArrayList<Animal> reproduction(int minhealth,int genlen,MutationType mutation,MovementType movement){
+    public ArrayList<Animal> reproduction(int minhealth, int healtscost,int genlen,MutationType mutation,MovementType movement, int minMutation, int maxMutation){
         ArrayList<Animal> newanimals = new ArrayList<>();
         for (Map.Entry<Vector2d,ArrayList<Animal>> entry:this.animals.entrySet()){
             if (entry.getValue().size()==1){
@@ -188,12 +188,11 @@ public abstract class AbstractWorldMap {
 
                 });
                 if (potential.size()>1){
-                    Animal mlode=new Animal(new Genotype(genlen,potential.get(0),potential.get(1),mutation,movement),entry.getKey(),2*minhealth,this);
+                    Animal mlode=new Animal(new Genotype(genlen,potential.get(0),potential.get(1),mutation,movement, minMutation, maxMutation),entry.getKey(),2*healtscost,this);
                     newanimals.add(mlode);
                     this.place(mlode,mlode.getPosition());
-                    potential.get(0).eat(-minhealth);
-                    potential.get(1).eat(-minhealth);
-                    System.out.println("Zrobiliśmy dziecko");
+                    potential.get(0).eat(-healtscost);
+                    potential.get(1).eat(-healtscost);
                 }
                 newanimals.addAll(potential);
             }

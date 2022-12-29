@@ -16,9 +16,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.scene.control.Label;
-
-import java.util.ArrayList;
 
 public class App extends Application implements IMapRefreshObserver{
 
@@ -37,6 +34,8 @@ public class App extends Application implements IMapRefreshObserver{
     private int animalReproductionEnergy;
     private int animalReproductionCost;
     private int genotypeLength;
+    private int minMutationNumber;
+    private int maxMutationNumber;
     private GridPane gridPane;
     private double windowWidth;
     private double windowHeight;
@@ -46,18 +45,24 @@ public class App extends Application implements IMapRefreshObserver{
     private Thread engineThread;
 
     public void init(){
-        this.mapHeight = 20;
-        this.mapWidth = 20;
-        this.initialGrassNumber = 30;
-        this.grassRespawnNumber = 5;
-        this.generator = GeneratorType.FORESTED_EQUATOR;
+        this.mapHeight = 50;
+        this.mapWidth = 50;
+        this.initialGrassNumber = 70;
+        this.grassRespawnNumber = 100;
+        this.generator = GeneratorType.TOXIC_CORPSES;
         this.map = new HellPortal((int)this.mapWidth,(int)this.mapHeight,this.initialGrassNumber, this.generator);
-        this.initialAnimalNumber = 30;
-        this.genotypeLength = 5;
+        this.initialAnimalNumber = 100;
+        this.genotypeLength = 15;
         this.movementType = MovementType.FULL_PREDESTINATION;
-        this.initialAnimalEnergy = 15;
+        this.mutationType = MutationType.BLESSRNG;
+        this.animalReproductionEnergy = 15;
+        this.animalReproductionCost = 10;
+        this.minMutationNumber = 0;
+        this.maxMutationNumber = 3;
+        this.initialAnimalEnergy = 30;
         this.energyFromGrass = 4;
-        this.engine = new SimulationEngine(this.map,this.initialAnimalNumber,this.genotypeLength,this.movementType,this.initialAnimalEnergy,this.energyFromGrass, this.grassRespawnNumber);
+        this.engine = new SimulationEngine(this.map,this.initialAnimalNumber,this.genotypeLength,this.movementType,this.initialAnimalEnergy,
+                this.energyFromGrass, this.grassRespawnNumber, this.animalReproductionEnergy, this.animalReproductionCost, this.mutationType, this.minMutationNumber, this.maxMutationNumber);
         this.engine.addObserver(this);
         this.engineThread = new Thread(this.engine);
         this.engineThread.start();

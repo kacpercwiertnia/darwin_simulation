@@ -17,10 +17,16 @@ public class SimulationEngine implements Runnable{
     private final int healthOfAnimal;
     private final int energyFromGrass;
     private final int dailyGrass;
+    private final int animalReproductionEnergy;
+    private final int animalReproductionCost;
+    private final MutationType mutationType;
+    private final int minMutationNumber;
+    private final int maxMutationNumber;
     private MapVisualizer mapVisualizer;
     private final List<IMapRefreshObserver> observers;
 
-    public SimulationEngine( AbstractWorldMap map, int numOfAnimals, int lengthOfGenotype, MovementType movementType, int healthOfAnimal, int energyFromGrass,int dailyGrass){
+    public SimulationEngine( AbstractWorldMap map, int numOfAnimals, int lengthOfGenotype, MovementType movementType, int healthOfAnimal,
+                             int energyFromGrass,int dailyGrass, int animalReproductionEnergy, int animalReproductionCost, MutationType mutationType, int minMutationNumber, int maxMutationNumber){
         this.map = map;
         this.numOfAnimals = numOfAnimals;
         this.lengthOfGenotype = lengthOfGenotype;
@@ -30,7 +36,12 @@ public class SimulationEngine implements Runnable{
         this.energyFromGrass = energyFromGrass;
         this.mapVisualizer=new MapVisualizer(map);
         this.observers = new ArrayList<IMapRefreshObserver>();
-        this.dailyGrass=dailyGrass;
+        this.dailyGrass = dailyGrass;
+        this.animalReproductionEnergy = animalReproductionEnergy;
+        this.animalReproductionCost = animalReproductionCost;
+        this.mutationType = mutationType;
+        this.minMutationNumber = minMutationNumber;
+        this.maxMutationNumber = maxMutationNumber;
         Random rn = new Random();
 
         for( int i = 0; i < this.numOfAnimals; i++) {
@@ -43,27 +54,25 @@ public class SimulationEngine implements Runnable{
 
     public void run(){
         try {
-            System.out.println(this.mapVisualizer.draw(map.getLowerLeft(), map.getUpperRight()));
-            while(true) {
+            while(this.animals.size() > 0) {
                 this.animals = this.map.clearCorpses();
                 mapRefresh();
-                Thread.sleep(50);
+                Thread.sleep(10);
                 for (Animal animal : animals) {
                     animal.move();
-
                 }
                 mapRefresh();
-                Thread.sleep(50);
+                Thread.sleep(10);
                 map.eatingTime(this.energyFromGrass);
                 mapRefresh();
-                Thread.sleep(50);
-                this.animals=map.reproduction(1,lengthOfGenotype,MutationType.BLESSRNG,movementType);
+                Thread.sleep(10);
+                this.animals=map.reproduction(this.animalReproductionEnergy,this.animalReproductionCost,this.lengthOfGenotype,this.mutationType,this.movementType,this.minMutationNumber, this.maxMutationNumber);
                 mapRefresh();
-                Thread.sleep(50);
+                Thread.sleep(10);
                 this.map.generateGrass(this.dailyGrass);
                 this.map.increaseAge();
                 mapRefresh();
-                Thread.sleep(50);
+                Thread.sleep(10);
             }
         }
         catch (InterruptedException e){

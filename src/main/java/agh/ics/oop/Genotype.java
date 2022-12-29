@@ -10,7 +10,7 @@ public class Genotype {
     private MutationType mutationType;
     private int currentGene = -1;
 
-    public Genotype(int length, Animal parent1, Animal parent2, MutationType mutationType, MovementType movementType){
+    public Genotype(int length, Animal parent1, Animal parent2, MutationType mutationType, MovementType movementType, int minMutation, int maxMutation){
         this.length = length;
         this.movementType = movementType;
         this.mutationType = mutationType;
@@ -19,7 +19,7 @@ public class Genotype {
         Animal weakerParent;
         Genotype strongerGenotype;
         Genotype weakerGenotype;
-        int numOfMutation = (int) ((Math.random() * (this.length - 0)) + 0);
+        int numOfMutation = (int) ((Math.random() * (maxMutation - minMutation)) + minMutation);
 
         if( parent1.getHealth() > parent2.getHealth() ){
             strongerParent = parent1;
