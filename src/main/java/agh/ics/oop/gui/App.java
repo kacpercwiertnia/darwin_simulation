@@ -4,6 +4,7 @@ import agh.ics.oop.*;
 import agh.ics.oop.map.AbstractWorldMap;
 import agh.ics.oop.map.GeneratorType;
 import agh.ics.oop.map.GlobeMap;
+import agh.ics.oop.map.HellPortal;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -47,15 +48,16 @@ public class App extends Application implements IMapRefreshObserver{
     public void init(){
         this.mapHeight = 20;
         this.mapWidth = 20;
-        this.initialGrassNumber = 20;
-        this.generator = GeneratorType.FORESTED_EQUATOR;
-        this.map = new GlobeMap((int)this.mapWidth,(int)this.mapHeight,this.initialGrassNumber, this.generator);
-        this.initialAnimalNumber = 8;
+        this.initialGrassNumber = 50;
+        this.grassRespawnNumber = 10;
+        this.generator = GeneratorType.TOXIC_CORPSES;
+        this.map = new HellPortal((int)this.mapWidth,(int)this.mapHeight,this.initialGrassNumber, this.generator);
+        this.initialAnimalNumber = 20;
         this.genotypeLength = 5;
         this.movementType = MovementType.FULL_PREDESTINATION;
         this.initialAnimalEnergy = 5;
-        this.energyFromGrass = 10;
-        this.engine = new SimulationEngine(this.map,this.initialAnimalNumber,this.genotypeLength,this.movementType,this.initialAnimalEnergy,this.energyFromGrass);
+        this.energyFromGrass = 4;
+        this.engine = new SimulationEngine(this.map,this.initialAnimalNumber,this.genotypeLength,this.movementType,this.initialAnimalEnergy,this.energyFromGrass, this.grassRespawnNumber);
         this.engine.addObserver(this);
         this.engineThread = new Thread(this.engine);
         this.engineThread.start();
@@ -105,7 +107,15 @@ public class App extends Application implements IMapRefreshObserver{
                 if (this.map.isOccupied(position)) {
                     Object element = this.map.objectAt(position);
                     if( element instanceof Animal){
-                        Circle animal = new Circle(this.cellWidth, Color.RED);
+                        int animalEnergy = ((Animal) element).getHealth();
+                        Color animalColor;
+                        if(animalEnergy >= this.initialAnimalEnergy){
+                            animalColor = Color.rgb(255,0,0);
+                        }
+                        else{
+                            animalColor = Color.rgb(255,(255/this.initialAnimalEnergy)*(this.initialAnimalEnergy-animalEnergy),(255/this.initialAnimalEnergy)*(this.initialAnimalEnergy-animalEnergy));
+                        }
+                        Circle animal = new Circle(this.cellWidth/2, animalColor);
                         GridPane.setHalignment(animal, HPos.CENTER);
                         gridPane.add(animal, x, (int)this.mapHeight-y-1, 1, 1);
                     }

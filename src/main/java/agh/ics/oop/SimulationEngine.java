@@ -16,10 +16,11 @@ public class SimulationEngine implements Runnable{
     private final MovementType movementType;
     private final int healthOfAnimal;
     private final int energyFromGrass;
+    private final int dailyGrass;
     private MapVisualizer mapVisualizer;
     private final List<IMapRefreshObserver> observers;
 
-    public SimulationEngine( AbstractWorldMap map, int numOfAnimals, int lengthOfGenotype, MovementType movementType, int healthOfAnimal, int energyFromGrass){
+    public SimulationEngine( AbstractWorldMap map, int numOfAnimals, int lengthOfGenotype, MovementType movementType, int healthOfAnimal, int energyFromGrass,int dailyGrass){
         this.map = map;
         this.numOfAnimals = numOfAnimals;
         this.lengthOfGenotype = lengthOfGenotype;
@@ -29,6 +30,7 @@ public class SimulationEngine implements Runnable{
         this.energyFromGrass = energyFromGrass;
         this.mapVisualizer=new MapVisualizer(map);
         this.observers = new ArrayList<IMapRefreshObserver>();
+        this.dailyGrass=dailyGrass;
         Random rn = new Random();
 
         for( int i = 0; i < this.numOfAnimals; i++) {
@@ -42,14 +44,14 @@ public class SimulationEngine implements Runnable{
     public void run(){
         try {
             System.out.println(this.mapVisualizer.draw(map.getLowerLeft(), map.getUpperRight()));
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 100; i++) {
                 this.animals = this.map.clearCorpses();
                 mapRefresh();
-                Thread.sleep(25);
+                Thread.sleep(50);
                 for (Animal animal : animals) {
                     animal.move();
                     mapRefresh();
-                    Thread.sleep(25);
+                    Thread.sleep(50);
                 /*System.out.println("POCZATEK RUCHU");
                 System.out.println("Przed ruchem: " + animal.getPosition().toString() + ' ' + animal.getDirection().toString());
                 System.out.println("Po ruchu/: " + animal.getPosition().toString() + ' ' + animal.getDirection().toString());
@@ -57,9 +59,12 @@ public class SimulationEngine implements Runnable{
                 }
                 map.eatingTime(this.energyFromGrass);
                 mapRefresh();
-                Thread.sleep(25);
+                Thread.sleep(50);
                 System.out.println(this.mapVisualizer.draw(map.getLowerLeft(), map.getUpperRight()));
+                this.map.generateGrass(this.dailyGrass);
                 this.map.increaseAge();
+                mapRefresh();
+                Thread.sleep(50);
             }
         }
         catch (InterruptedException e){

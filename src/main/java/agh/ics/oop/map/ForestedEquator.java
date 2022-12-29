@@ -1,6 +1,7 @@
 package agh.ics.oop.map;
 
 import agh.ics.oop.Grass;
+import agh.ics.oop.Grave;
 import agh.ics.oop.Vector2d;
 
 import java.util.*;
@@ -25,7 +26,7 @@ public class ForestedEquator extends GrassGenerator{
 
     }
 
-    public Map<Vector2d,Grass> generateGrass(ArrayList<Vector2d> currentGrass, int grassnum){
+    public Map<Vector2d,Grass> generateGrass(ArrayList<Vector2d> currentGrass, int grassnum, Grave[] graveyard){
         int j=0,i=0,x,y;
 
         Random rn = new Random();

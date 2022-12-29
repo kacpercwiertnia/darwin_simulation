@@ -8,22 +8,13 @@ import agh.ics.oop.Vector2d;
 import java.util.*;
 
 public abstract class AbstractWorldMap {
-    Comparator<Grave> comparator = new Comparator<Grave>() {
-        @Override
-        public int compare(Grave o1, Grave o2) {
-            if(o1.corpses> o2.corpses){
-                return 1;
-            }else{
-                return -1;
-            }
-        }
-    };
     protected Grave[] graveyard;
     protected int width,height,grassnum,age=0;
     GrassGenerator grassField;
     Map<Vector2d, ArrayList<Animal>> animals = new HashMap<>();
     Map<Vector2d, Grass> plants = new HashMap<>();
 
+    abstract public void generateGrass(int n);
     public void increaseAge(){
         this.age++;
     }
@@ -47,7 +38,7 @@ public abstract class AbstractWorldMap {
     }
     public Object objectAt(Vector2d position){
         if (this.animals.containsKey(position)){
-            return this.animals.get(position);
+            return this.animals.get(position).get(0);
         }
         if (this.plants.containsKey(position)){
             return this.plants.get(position);
@@ -88,6 +79,7 @@ public abstract class AbstractWorldMap {
             for (Animal one:animal){
                 if (one.getHealth()==0){
                     toDelete.put(one.getPosition(),one);
+                    addCorpse(one.getPosition());
                 }else{
                     anims.add(one);
                 }
@@ -110,12 +102,21 @@ public abstract class AbstractWorldMap {
         for (int i=0;i<graveyard.length;i++){
             if (graveyard[i].position.equals(position)){
                 graveyard[i].corpses++;
-                Arrays.sort(graveyard,comparator);
+                Arrays.sort(graveyard,new Comparator<Grave>() {
+                    @Override
+                    public int compare(Grave o1, Grave o2) {
+                        if(o1.corpses> o2.corpses){
+                            return 1;
+                        }else{
+                            return -1;
+                        }
+                    }
+                });
             }
         }
     }
     public void eatingTime(int energy){
-        HashMap<Vector2d,Grass> toDelete=new HashMap<>();
+        ArrayList<Vector2d> toDelete=new ArrayList<>();
         for (Map.Entry<Vector2d,Grass> mapentry:this.plants.entrySet()){
             if (this.animals.containsKey(mapentry.getKey())){
                 if (this.animals.get(mapentry.getKey()).size()>1){
@@ -124,7 +125,11 @@ public abstract class AbstractWorldMap {
                 }else{
                     this.animals.get(mapentry.getKey()).get(0).eat(energy);
                 }
+                toDelete.add(mapentry.getKey());
             }
+        }
+        for (Vector2d position:toDelete){
+            this.plants.remove(position);
         }
     }
     private int getWinner(ArrayList<Animal> animals){
