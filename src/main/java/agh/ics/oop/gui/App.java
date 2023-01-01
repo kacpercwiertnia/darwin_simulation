@@ -65,13 +65,13 @@ public class App extends Application implements IMapRefreshObserver{
     public void init(){
         this.mapHeight = 50;
         this.mapWidth = 50;
-        this.initialGrassNumber = 100;
+        this.initialGrassNumber = 1000;
         this.grassRespawnNumber = 10;
         this.generator = GeneratorType.FORESTED_EQUATOR;
         this.map = new GlobeMap((int)this.mapWidth,(int)this.mapHeight,this.initialGrassNumber, this.generator);
-        this.initialAnimalNumber = 100;
+        this.initialAnimalNumber = 200;
         this.genotypeLength = 10;
-        this.movementType = MovementType.FULL_PREDESTINATION;
+        this.movementType = MovementType.BIT_OF_MADNESS;
         this.mutationType = MutationType.BLESSRNG;
         this.animalReproductionEnergy = 15;
         this.animalReproductionCost = 10;
@@ -130,8 +130,6 @@ public class App extends Application implements IMapRefreshObserver{
                 this.engineThread.suspend();
             }
         });
-        GridPane.setHalignment(button, HPos.CENTER);
-        gridPane.add(button, 0,10 , 1, 1);
 
         root.getChildren().add(button);
         root.getChildren().add(this.gridPane);
