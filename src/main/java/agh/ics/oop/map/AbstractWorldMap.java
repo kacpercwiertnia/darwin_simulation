@@ -159,7 +159,19 @@ public abstract class AbstractWorldMap {
     }
 
     private int getWinner3(ArrayList<Animal> animals){
-
+        int best=0;
+        boolean flag=true;
+        for (int i=0;i<animals.size();i++){
+            if (animals.get(i).getChildren()>animals.get(best).getChildren()){
+                best=i;
+                flag=false;
+            }else if(animals.get(i).getChildren()==animals.get(best).getChildren()){
+                flag=true;
+            }
+        }
+        if (!flag){
+            return best;
+        }
         Random rn=new Random();
         return rn.nextInt(animals.size());
     }
@@ -192,7 +204,9 @@ public abstract class AbstractWorldMap {
                     newanimals.add(mlode);
                     this.place(mlode,mlode.getPosition());
                     potential.get(0).eat(-healtscost);
+                    potential.get(0).addChild();
                     potential.get(1).eat(-healtscost);
+                    potential.get(1).addChild();
                 }
                 newanimals.addAll(potential);
             }

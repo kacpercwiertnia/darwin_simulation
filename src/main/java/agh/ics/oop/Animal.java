@@ -12,6 +12,7 @@ public class Animal {
     private int health;
     private AbstractWorldMap map;
     private final int birthDate;
+    private int children;
 
     public Animal(Genotype genotype, Vector2d position, int health, AbstractWorldMap map){
         Random rn = new Random();
@@ -20,6 +21,7 @@ public class Animal {
         this.position = position;
         this.genotype = genotype;
         this.map = map;
+        this.children=0;
         this.birthDate = this.map.getAge();
     }
 
@@ -30,7 +32,12 @@ public class Animal {
     public Genotype getGenotype(){
         return this.genotype;
     }
-
+    public int getChildren(){
+        return this.children;
+    }
+    public void addChild(){
+        this.children++;
+    }
     public Vector2d getPosition(){
         return this.position;
     }
