@@ -35,22 +35,26 @@ public class Genotype {
         }
 
         int sumHealth = strongerParent.getHealth() + weakerParent.getHealth();
-        float strongerGenesRatio = strongerParent.getHealth() / sumHealth;
-        float weakerGenesRatio = 1 - strongerGenesRatio;
+        double strongerGenesRatio = (double)strongerParent.getHealth() / (double)sumHealth;
+        double weakerGenesRatio = 1 - strongerGenesRatio;
         int numOfStrongerGenes = (int) Math.ceil(this.length * strongerGenesRatio);
         int numOfWeakerGenes = (int) Math.floor(this.length * weakerGenesRatio);
+
+        if(numOfStrongerGenes+numOfWeakerGenes < this.length){
+            numOfStrongerGenes+=1;
+        }
 
         if( side == 0 ){
             for( int i = 0; i < numOfStrongerGenes; i++){
                 this.genotype.add(strongerGenotype.getGene(i));
             }
             for( int i = 0; i < numOfWeakerGenes; i++ ){
-                this.genotype.add(weakerGenotype.getGene(weakerGenotype.getLength()-i-1));
+                this.genotype.add(weakerGenotype.getGene(this.length-i-1));
             }
         }
         else{
             for( int i = 0; i < numOfStrongerGenes; i++){
-                this.genotype.add(strongerGenotype.getGene(strongerGenotype.getLength()-i-1));
+                this.genotype.add(strongerGenotype.getGene(this.length-i-1));
             }
             for( int i = 0; i < numOfWeakerGenes; i++ ){
                 this.genotype.add(weakerGenotype.getGene(i));
@@ -81,9 +85,8 @@ public class Genotype {
                }
             }
 
-            this.genotype.add(pickedGene, newGene);
+            this.genotype.set(pickedGene, newGene);
         }
-
 
     }
 
@@ -95,6 +98,7 @@ public class Genotype {
             int gene = (int) ((Math.random() * (7 - 0)) + 0);
             genotype.add(gene);
         }
+
     }
 
     public Integer getGene(int index){
@@ -107,6 +111,10 @@ public class Genotype {
 
     public String toString(){
         return this.genotype.toString();
+    }
+
+    public int getCurrentGene(){
+        return this.currentGene;
     }
 
     public int nextGene(){

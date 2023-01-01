@@ -13,6 +13,9 @@ public class Animal {
     private AbstractWorldMap map;
     private final int birthDate;
     private int children;
+    private boolean isDead = false;
+    private int deathDate;
+    private int eatenGrass = 0;
 
     public Animal(Genotype genotype, Vector2d position, int health, AbstractWorldMap map){
         Random rn = new Random();
@@ -28,7 +31,6 @@ public class Animal {
     public int getHealth() {
         return this.health;
     }
-
     public Genotype getGenotype(){
         return this.genotype;
     }
@@ -41,17 +43,27 @@ public class Animal {
     public Vector2d getPosition(){
         return this.position;
     }
-
     public MapDirection getDirection(){
         return this.direction;
     }
-    public int getAge(){return this.map.getAge()-this.birthDate;}
+    public int getAge(){
+        if( this.isDead) {
+            return this.deathDate - this.birthDate;
+        }
+        return this.map.getAge()-this.birthDate;
+    }
+
+    public int getDeathDate(){
+        return this.deathDate;
+    }
+
+    public int getEatenGrass(){
+        return this.eatenGrass;
+    }
     @Override
     public String toString(){
         return this.direction.toString();
     }
-
-
     public boolean isAt(Vector2d position) {
         return this.position.equals(position);
     }
@@ -75,5 +87,12 @@ public class Animal {
 
     public void eat(int energy){
         this.health += energy;
+        this.eatenGrass++;
     }
+
+    public void killAnimal(){
+        this.isDead = true;
+        this.deathDate = this.map.getAge();
+    }
+
 }

@@ -8,10 +8,13 @@ import agh.ics.oop.map.HellPortal;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -43,16 +46,31 @@ public class App extends Application implements IMapRefreshObserver{
     private double cellHeight;
     private Scene scene;
     private Thread engineThread;
+    private boolean start = true;
+    private Label animalGenotype;
+    private Label animalCurrentGene;
+    private Label animalEnergy;
+    private Label animalGrassEaten;
+    private Label animalChilds;
+    private Label animalAge;
+    private Label animalDeath;
+    private Animal selectedAnimal;
+    private Label simulationAnimals;
+    private Label simulationGrass;
+    private Label simulationFreeFields;
+    private Label simulationGenotypes;
+    private Label simulationEnergy;
+    private Label simulationAge;
 
     public void init(){
         this.mapHeight = 50;
         this.mapWidth = 50;
-        this.initialGrassNumber = 70;
-        this.grassRespawnNumber = 100;
-        this.generator = GeneratorType.TOXIC_CORPSES;
-        this.map = new HellPortal((int)this.mapWidth,(int)this.mapHeight,this.initialGrassNumber, this.generator);
+        this.initialGrassNumber = 100;
+        this.grassRespawnNumber = 10;
+        this.generator = GeneratorType.FORESTED_EQUATOR;
+        this.map = new GlobeMap((int)this.mapWidth,(int)this.mapHeight,this.initialGrassNumber, this.generator);
         this.initialAnimalNumber = 100;
-        this.genotypeLength = 15;
+        this.genotypeLength = 10;
         this.movementType = MovementType.FULL_PREDESTINATION;
         this.mutationType = MutationType.BLESSRNG;
         this.animalReproductionEnergy = 15;
@@ -98,14 +116,60 @@ public class App extends Application implements IMapRefreshObserver{
             gridPane.getColumnConstraints().add(new ColumnConstraints(this.cellWidth));
         }
 
+        VBox root = new VBox();
+        root.setAlignment(Pos.CENTER);
+        Button button = new Button("Stop");
+        button.setOnAction(event -> {
+            this.start = !this.start;
+            if(this.start){
+                button.setText("Stop");
+                this.engineThread.resume();
+            }
+            else{
+                button.setText("Start");
+                this.engineThread.suspend();
+            }
+        });
+        GridPane.setHalignment(button, HPos.CENTER);
+        gridPane.add(button, 0,10 , 1, 1);
+
+        root.getChildren().add(button);
+        root.getChildren().add(this.gridPane);
+        HBox info = new HBox();
+        info.setAlignment(Pos.CENTER);
+        info.setSpacing(50);
+        VBox animalInfo = new VBox();
+        animalInfo.setAlignment(Pos.TOP_LEFT);
+        this.animalGenotype = new Label("Genotyp: ");
+        this.animalCurrentGene = new Label("Aktualny Gen");
+        this.animalEnergy = new Label("Energia: ");
+        this.animalGrassEaten = new Label("Zjedzona trawka: ");
+        this.animalChilds = new Label("Ilość dzieci: ");
+        this.animalAge = new Label("Wiek: ");
+        this.animalDeath = new Label("Data śmierci: ");
+        animalInfo.getChildren().addAll(this.animalGenotype, this.animalCurrentGene, this.animalEnergy, this.animalGrassEaten, this.animalChilds, this.animalAge, this.animalDeath);
+        VBox simulationInfo = new VBox();
+        simulationInfo.setAlignment(Pos.TOP_RIGHT);
+        this.simulationAnimals = new Label("Ilość zwierząt: ");
+        this.simulationGrass = new Label("Ilość trawy: ");
+        this.simulationFreeFields = new Label("Ilość wolnych pól: ");
+        this.simulationGenotypes = new Label("Najpopularniejszy Genotyp: ");
+        this.simulationEnergy = new Label("Średni poziom energii: ");
+        this.simulationAge = new Label("Średnia długość życia: ");
+        simulationInfo.getChildren().addAll(this.simulationAnimals, this.simulationGrass, this.simulationFreeFields, this.simulationGenotypes, this.simulationEnergy, this.simulationAge);
+        info.getChildren().addAll(animalInfo, simulationInfo);
+        root.getChildren().add(info);
+
         this.renderScene();
 
-        this.scene = new Scene(this.gridPane, this.windowWidth, this.windowHeight);
+        this.scene = new Scene(root, this.windowWidth, this.windowHeight+150);
         primaryStage.setScene(this.scene);
         primaryStage.show();
     }
 
     void renderScene(){
+        this.getAnimalInfo();
+        this.getSimulationInfo();
         for (int x = 0; x < this.mapWidth; x++) {
             for (int y = 0; y < this.mapHeight; y++) {
                 Vector2d position = new Vector2d(x, y);
@@ -123,6 +187,10 @@ public class App extends Application implements IMapRefreshObserver{
                         Circle animal = new Circle(this.cellWidth/2, animalColor);
                         GridPane.setHalignment(animal, HPos.CENTER);
                         gridPane.add(animal, x, (int)this.mapHeight-y-1, 1, 1);
+                        animal.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                            selectedAnimal = ((Animal) element);
+                            this.getAnimalInfo();
+                        });
                     }
                     else{
                         Rectangle grass = new Rectangle(this.cellWidth-2, this.cellHeight-2, Color.GREEN);
@@ -143,5 +211,32 @@ public class App extends Application implements IMapRefreshObserver{
             this.gridPane.setGridLinesVisible(false);
             this.renderScene();
         });
+    }
+
+    public void getAnimalInfo(){
+        if( this.selectedAnimal != null) {
+            this.animalGenotype.setText("Genotyp: "+this.selectedAnimal.getGenotype().toString());
+            this.animalCurrentGene.setText("Aktualny Gen: "+this.selectedAnimal.getGenotype().getCurrentGene());
+            this.animalEnergy.setText("Energia: " + this.selectedAnimal.getHealth());
+            this.animalGrassEaten.setText("Zjedzona trawka: "+this.selectedAnimal.getEatenGrass());
+            this.animalChilds.setText("Ilość dzieci: "+this.selectedAnimal.getChildren());
+            this.animalAge.setText("Wiek: "+this.selectedAnimal.getAge());
+            if( this.selectedAnimal.getDeathDate() == 0)
+            {
+                this.animalDeath.setText("Data śmierci: ");
+            }
+            else{
+                this.animalDeath.setText("Data śmierci: "+this.selectedAnimal.getDeathDate());
+            }
+        }
+    }
+
+    public void getSimulationInfo(){
+        this.simulationAnimals.setText("Ilość zwierząt: "+this.map.getNumOfAnimals());
+        this.simulationGrass.setText("Ilość trawy: "+this.map.getNumOfGrass());
+        this.simulationFreeFields.setText("Ilość wolnych pól: "+this.map.getNumOfFreeFields());
+        this.simulationGenotypes.setText("Najpopularniejszy Genotyp: "+this.map.getMostPopularGenotype());
+        this.simulationEnergy.setText("Średni poziom energii: "+this.map.getAverageEnergy());
+        this.simulationAge.setText("Średnia długość życia: "+this.map.getAverageLifespan());
     }
 }

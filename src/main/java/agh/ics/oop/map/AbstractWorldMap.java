@@ -9,7 +9,9 @@ public abstract class AbstractWorldMap {
     protected int width,height,grassnum,age=0;
     GrassGenerator grassField;
     Map<Vector2d, ArrayList<Animal>> animals = new HashMap<>();
+    Map<String, Integer> genotypes = new HashMap<>();
     Map<Vector2d, Grass> plants = new HashMap<>();
+    protected double averageLifespan = 0,numOfDeaths = 0;
 
     abstract public void generateGrass(int n);
     public void increaseAge(){
@@ -28,6 +30,12 @@ public abstract class AbstractWorldMap {
             anims=this.animals.get(position);
             anims.add(animal);
             this.animals.replace(position,this.animals.get(position),anims);
+        }
+
+        if(!this.genotypes.containsKey(animal.getGenotype().toString())){
+            this.genotypes.put(animal.getGenotype().toString(), 1);
+        }else{
+            this.genotypes.replace(animal.getGenotype().toString(), this.genotypes.get(animal.getGenotype().toString())+1);
         }
     }
     public boolean isOccupied(Vector2d position){
@@ -74,8 +82,12 @@ public abstract class AbstractWorldMap {
         for (ArrayList<Animal> animal:this.animals.values()){
             for (Animal one:animal){
                 if (one.getHealth()==0){
+                    one.killAnimal();
                     toDelete.put(one.getPosition(),one);
                     addCorpse(one.getPosition());
+                    this.numOfDeaths++;
+                    this.averageLifespan = (this.averageLifespan*(this.numOfDeaths-1)+one.getAge())/numOfDeaths;
+                    this.genotypes.replace(one.getGenotype().toString(), this.genotypes.get(one.getGenotype().toString())-1);
                 }else{
                     anims.add(one);
                 }
@@ -213,5 +225,62 @@ public abstract class AbstractWorldMap {
         }
 
         return newanimals;
+    }
+
+    public int getNumOfAnimals(){
+        int numOfAnimals = 0;
+        for (ArrayList<Animal> animal:this.animals.values()){
+            numOfAnimals += animal.size();
+        }
+
+        return numOfAnimals;
+    }
+
+    public int getNumOfGrass(){
+        return this.plants.size();
+    }
+
+    public double getAverageEnergy(){
+        double energySum = 0;
+        double animalSum = 0;
+
+        for (ArrayList<Animal> animal:this.animals.values()){
+            for (Animal one:animal){
+                animalSum++;
+                energySum += one.getHealth();
+            }
+        }
+
+        return energySum/animalSum;
+    }
+
+    public double getAverageLifespan(){
+        return this.averageLifespan;
+    }
+
+    public int getNumOfFreeFields(){
+        int freeFields = this.width*this.height - this.animals.size() - this.plants.size();
+        int repeatitons = 0;
+
+        for(Vector2d position: animals.keySet()){
+            if( plants.containsKey(position)){
+                repeatitons++;
+            }
+        }
+
+        return freeFields + repeatitons;
+    }
+
+    public String getMostPopularGenotype(){
+        int max = 0;
+        String genotype = "";
+        for(Map.Entry<String, Integer> set: genotypes.entrySet()){
+            if(set.getValue() > max){
+                max = set.getValue();
+                genotype = set.getKey();
+            }
+        }
+
+        return genotype;
     }
 }
